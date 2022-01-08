@@ -17,13 +17,13 @@ const Node = ({
 
     switch (isMoving.type) {
       case "start":
-        nodeClass += "moving-start";
+        nodeClass += "moving-start ";
         break;
       case "finish":
-        nodeClass += "moving-finish";
+        nodeClass += "moving-finish ";
         break;
       default:
-        nodeClass += "";
+        // nodeClass += "";
         break;
     }
 

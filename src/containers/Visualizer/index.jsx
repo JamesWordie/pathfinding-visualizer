@@ -17,7 +17,6 @@ const Visualizer = () => {
   const [isMoving, setIsMoving] = useState({ moving: false, type: "" });
 
   const [getInitialGrid] = useInitialGrid();
-  console.log(grid);
 
   const [updateGrid, updateGridStart, updateGridFinish, updateMovingNode] =
     useUpdateGrid(startNode, finishNode);
@@ -42,20 +41,21 @@ const Visualizer = () => {
   useEffect(() => {
     setStartNode({ row: 0, col: 0 });
     setFinishNode({ row: rows - 1, col: cols - 1 });
-  }, [rows, cols]);
+  }, []);
 
   /**
    * @function handleMouseDown mouse event for down-click on a node
    * @returns updated grid, for moving start, finish and setting wall nodes
    */
   const handleMouseDown = (row, col) => {
+    if (isMoving.moving) return;
     let currentNode = grid[row][col];
+
     if (currentNode.isStart) {
-      setIsMoving({ moving: true, type: "start" });
+      setMovingGrid("start");
       return;
-    }
-    if (currentNode.isFinish) {
-      setIsMoving({ moving: true, type: "finish" });
+    } else if (currentNode.isFinish) {
+      setMovingGrid("finish");
       return;
     }
     const newGrid = updateGrid(grid, row, col);
@@ -79,10 +79,9 @@ const Visualizer = () => {
       newGrid = updateGridFinish(grid, row, col);
       setFinishNode({ row, col });
       setGrid(newGrid);
-    } else {
-      setIsMoving({ moving: false, type: "" });
     }
 
+    setIsMoving({ moving: false, type: "" });
     setMouseDown(false);
   };
 
@@ -91,10 +90,18 @@ const Visualizer = () => {
    * @returns updated grid, setting wall nodes
    */
   const handleMouseEnter = (row, col) => {
-    if (!grid[row][col].nodeType === "wall" || mouseDown) {
-      const newGrid = updateGrid(grid, row, col);
-      setGrid(newGrid);
-    }
+    if (grid[row][col].nodeType === "wall" || !mouseDown) return;
+    const newGrid = updateGrid(grid, row, col);
+    setGrid(newGrid);
+  };
+
+  const setMovingGrid = (movingType) => {
+    setIsMoving({ moving: true, type: movingType });
+    const newGrid = updateMovingNode(grid, {
+      moving: true,
+      type: movingType,
+    });
+    setGrid(newGrid);
   };
 
   return (

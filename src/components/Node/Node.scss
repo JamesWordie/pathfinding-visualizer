@@ -17,12 +17,12 @@
   background-color: blue;
 }
 
-.moving-start {
-  background-color: purple;
+.moving-start:hover {
+  background-color: lightgreen;
 }
 
-.moving-finish {
-  background-color: lime;
+.moving-finish:hover {
+  background-color: lightpink;
 }
 
 .visited-node {

@@ -14,7 +14,7 @@ export const useUpdateGrid = (startNode, finishNode) => {
   const updateGrid = (grid, row, col) => {
     const gridCopy = cloneDeep(grid);
     const currentNode = gridCopy[row][col];
-    if (!currentNode.isStart || !currentNode.isFinish) {
+    if (!currentNode.isStart && !currentNode.isFinish) {
       currentNode.nodeType = currentNode.nodeType === "wall" ? "" : "wall";
       gridCopy[row][col] = currentNode;
     }
@@ -25,43 +25,57 @@ export const useUpdateGrid = (startNode, finishNode) => {
    * @returns an updated version of the grid with new start location
    */
   const updateGridStart = (grid, row, col) => {
-    const gridCopy = cloneDeep(grid);
+    let gridCopy = cloneDeep(grid);
     const oldStartNode = gridCopy[startNode.row][startNode.col];
     const newStartNode = gridCopy[row][col];
 
-    oldStartNode.isStart = false;
-    newStartNode.isStart = true;
+    if (!newStartNode.isFinish) {
+      oldStartNode.isStart = false;
+      newStartNode.isStart = true;
 
-    gridCopy[startNode.row][startNode.col] = oldStartNode;
-    gridCopy[row][col] = newStartNode;
+      gridCopy[startNode.row][startNode.col] = oldStartNode;
+      gridCopy[row][col] = newStartNode;
+    }
 
-    return gridCopy;
+    return updateMovingNode(gridCopy, {
+      moving: false,
+      type: "",
+    });
   };
 
   /**
    * @returns an updated version of the grid with new finish location
    */
   const updateGridFinish = (grid, row, col) => {
-    const gridCopy = cloneDeep(grid);
+    let gridCopy = cloneDeep(grid);
     const oldFinishNode = gridCopy[finishNode.row][finishNode.col];
     const newFinishNode = gridCopy[row][col];
 
-    oldFinishNode.isFinish = false;
-    newFinishNode.isFinish = true;
+    if (!newFinishNode.isStart) {
+      oldFinishNode.isFinish = false;
+      newFinishNode.isFinish = true;
 
-    gridCopy[finishNode.row][finishNode.col] = oldFinishNode;
-    gridCopy[row][col] = newFinishNode;
+      gridCopy[finishNode.row][finishNode.col] = oldFinishNode;
+      gridCopy[row][col] = newFinishNode;
+    }
 
-    return gridCopy;
+    return updateMovingNode(gridCopy, {
+      moving: false,
+      type: "",
+    });
   };
 
-  const updateMovingNode = (grid, row, col, isMoving) => {
-    const gridCopy = cloneDeep(grid);
-    const currentNode = gridCopy[row][col];
-    currentNode.isMoving = isMoving;
-    gridCopy[row][col] = currentNode;
-
-    return gridCopy;
+  /**
+   * @function updateMovingNode sets all nodes with additional class for hovering while moving start/finish
+   * @returns an updated grid with the isMoving properties set
+   */
+  const updateMovingNode = (grid, isMoving) => {
+    return grid.map((row) => {
+      return row.map((node) => {
+        node.isMoving = isMoving;
+        return node;
+      });
+    });
   };
 
   return [updateGrid, updateGridStart, updateGridFinish, updateMovingNode];
