@@ -1,17 +1,17 @@
 export const useInitialGrid = () => {
-  const getInitialGrid = (rows, cols, startNode, finishNode) => {
+  const getInitialGrid = (rows, cols, startNode, finishNode, isMoving) => {
     let grid = [];
     for (let row = 0; row < rows; row++) {
       let currentRow = [];
       for (let col = 0; col < cols; col++) {
-        currentRow.push(renderNode(row, col, startNode, finishNode));
+        currentRow.push(renderNode(row, col, startNode, finishNode, isMoving));
       }
       grid.push(currentRow);
     }
     return grid;
   };
 
-  const renderNode = (row, col, startNode, finishNode) => {
+  const renderNode = (row, col, startNode, finishNode, isMoving) => {
     return {
       row,
       col,
@@ -19,6 +19,8 @@ export const useInitialGrid = () => {
       isFinish: finishNode.row === row && finishNode.col === col,
       distance: Infinity,
       totalDistance: Infinity,
+      nodeType: "",
+      isMoving,
     };
   };
 

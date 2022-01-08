@@ -1,18 +1,18 @@
 // Components
 import Node from "../Node";
 // Styles
-import { Wrapper, Content } from "./Grid";
+import "./Grid.scss";
 // Config
 // import { NodeType, GridType } from "../../config/types";
 
 const Grid = ({ grid, handleMouseDown, handleMouseUp, handleMouseEnter }) => {
   return (
-    <Wrapper>
+    <div className="grid">
       {grid.map((row, rowIndex) => {
         return (
-          <Content key={rowIndex * Math.random()}>
+          <div key={rowIndex * Math.random()}>
             {row.map((node) => {
-              const { row, col, isStart, isFinish } = node;
+              const { row, col, isStart, isFinish, nodeType, isMoving } = node;
               return (
                 <Node
                   key={`node-${row}-${col}`}
@@ -23,13 +23,15 @@ const Grid = ({ grid, handleMouseDown, handleMouseUp, handleMouseEnter }) => {
                   handleMouseDown={handleMouseDown}
                   handleMouseUp={handleMouseUp}
                   handleMouseEnter={handleMouseEnter}
+                  nodeType={nodeType}
+                  isMoving={isMoving}
                 />
               );
             })}
-          </Content>
+          </div>
         );
       })}
-    </Wrapper>
+    </div>
   );
 };
 
